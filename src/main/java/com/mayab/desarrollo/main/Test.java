@@ -1,8 +1,5 @@
 package com.mayab.desarrollo.main;
 
-import org.hibernate.Session;
-
-import com.mayab.desarrollo.entities.Usuario;
 import com.mayab.desarrollo.persistence.UserDAO;
 import com.mayab.desarrollo.servicios.LoginServicio;
 
