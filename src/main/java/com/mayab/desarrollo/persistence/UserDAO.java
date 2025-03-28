@@ -3,6 +3,7 @@ package com.mayab.desarrollo.persistence;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import com.mayab.desarrollo.entities.Usuario;
 import com.mayab.desarrollo.main.HibernateUtil;
@@ -18,38 +19,61 @@ public class UserDAO implements IUserDAO{
   }
 
   @Override
-  public List<Usuario> findAll() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findAll'");
-  }
-
-  @Override
-  public boolean deleteUser(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+  public Usuario findByEmail(String email) {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Query query = session.createQuery("from Usuario where email = :email");
+    query.setParameter("email", email);
+    Usuario usuario = (Usuario) query.uniqueResult();
+    session.close();
+    return usuario;
   }
 
   @Override
   public Usuario findById(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Usuario usuario = session.get(Usuario.class, id);
+    session.close();
+    return usuario;
+  }
+
+  @Override
+  public List<Usuario> findAll() {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Query query = session.createQuery("FROM Usuario");
+    List<Usuario> usuarios = query.getResultList();
+    session.close();
+    return usuarios;
+  }
+
+  @Override
+  public boolean deleteUser(int id) {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    session.beginTransaction();
+    Usuario usuario = session.get(Usuario.class, id);
+    session.delete(usuario);
+    session.getTransaction().commit();
+    return true;
   }
 
   @Override
   public Usuario updatePass(Usuario usuario, String contra) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updatePass'");
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    session.beginTransaction();
+    usuario.setPassword(contra);
+    session.update(usuario);
+    session.getTransaction().commit();
+    session.close();
+    return usuario;
   }
 
   @Override
   public Usuario findByName(String nombre) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findByName'");
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Query query = session.createQuery("from Usuario where nombre = :nombre");
+    query.setParameter("nombre", nombre);
+    Usuario usuario = (Usuario) query.uniqueResult();
+    session.close();
+    return usuario;
   }
 
-  @Override
-  public Usuario findByEmail(String email) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
-  }
 }
